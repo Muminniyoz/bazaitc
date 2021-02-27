@@ -1,0 +1,58 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="eventHistory">
+            <h2><span jhiTranslate="bazaitcApp.eventHistory.detail.title">Event History</span> {{ eventHistory.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.type">Type</span></dt>
+                <dd>
+                    <span jhiTranslate="{{ 'bazaitcApp.EventType.' + eventHistory.type }}">{{ eventHistory.type }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.text">Text</span></dt>
+                <dd>
+                    <span>{{ eventHistory.text }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.idNumber">Id Number</span></dt>
+                <dd>
+                    <span>{{ eventHistory.idNumber }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.time">Time</span></dt>
+                <dd>
+                    <span>{{ eventHistory.time }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.center">Center</span></dt>
+                <dd>
+                    <div *ngIf="eventHistory.centerId">
+                        <a [routerLink]="['/center', eventHistory.centerId, 'view']">{{ eventHistory.centerId }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.user">User</span></dt>
+                <dd>
+                    {{ eventHistory.userId }}
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.eventHistory.openedUser">Opened User</span></dt>
+                <dd>
+                    <span *ngFor="let openedUser of eventHistory.openedUsers; let last = last">
+                        {{ openedUser.id }}{{ last ? '' : ', ' }}
+                    </span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/event-history', eventHistory.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

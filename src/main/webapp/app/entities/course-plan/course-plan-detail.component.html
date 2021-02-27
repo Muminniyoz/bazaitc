@@ -1,0 +1,38 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="coursePlan">
+            <h2><span jhiTranslate="bazaitcApp.coursePlan.detail.title">Course Plan</span> {{ coursePlan.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="bazaitcApp.coursePlan.month">Month</span></dt>
+                <dd>
+                    <span jhiTranslate="{{ 'bazaitcApp.Month.' + coursePlan.month }}">{{ coursePlan.month }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.coursePlan.technology">Technology</span></dt>
+                <dd>
+                    <span>{{ coursePlan.technology }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.coursePlan.extraPrice">Extra Price</span></dt>
+                <dd>
+                    <span>{{ coursePlan.extraPrice }}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/course-plan', coursePlan.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

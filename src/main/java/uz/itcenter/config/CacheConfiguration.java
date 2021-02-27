@@ -50,6 +50,23 @@ public class CacheConfiguration {
             createCache(cm, uz.itcenter.domain.User.class.getName());
             createCache(cm, uz.itcenter.domain.Authority.class.getName());
             createCache(cm, uz.itcenter.domain.User.class.getName() + ".authorities");
+            createCache(cm, uz.itcenter.domain.Regions.class.getName());
+            createCache(cm, uz.itcenter.domain.Center.class.getName());
+            createCache(cm, uz.itcenter.domain.Skill.class.getName());
+            createCache(cm, uz.itcenter.domain.Skill.class.getName() + ".teachers");
+            createCache(cm, uz.itcenter.domain.Teacher.class.getName());
+            createCache(cm, uz.itcenter.domain.Teacher.class.getName() + ".skills");
+            createCache(cm, uz.itcenter.domain.Course.class.getName());
+            createCache(cm, uz.itcenter.domain.Course.class.getName() + ".registereds");
+            createCache(cm, uz.itcenter.domain.Registered.class.getName());
+            createCache(cm, uz.itcenter.domain.Student.class.getName());
+            createCache(cm, uz.itcenter.domain.Participant.class.getName());
+            createCache(cm, uz.itcenter.domain.PaymentMethod.class.getName());
+            createCache(cm, uz.itcenter.domain.SystemConfig.class.getName());
+            createCache(cm, uz.itcenter.domain.Payment.class.getName());
+            createCache(cm, uz.itcenter.domain.EventHistory.class.getName());
+            createCache(cm, uz.itcenter.domain.EventHistory.class.getName() + ".openedUsers");
+            createCache(cm, uz.itcenter.domain.CoursePlan.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

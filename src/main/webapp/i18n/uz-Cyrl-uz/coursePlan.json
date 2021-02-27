@@ -1,0 +1,24 @@
+{
+  "bazaitcApp": {
+    "coursePlan": {
+      "home": {
+        "title": "Course Plans",
+        "createLabel": "Янги Course Plan қўшиш",
+        "createOrEditLabel": "Course Planни таҳрирлаш",
+        "notFound": "No Course Plans found"
+      },
+      "created": "Course Plan {{ param }} билан қўшилди.",
+      "updated": "{{ param }}- Course Plan сақланди.",
+      "deleted": "{{ param }}- Course Plan ўчирилди.",
+      "delete": {
+        "question": "{{ id }}- Course Planни ўчирмоқчимисиз? "
+      },
+      "detail": {
+        "title": "Course Plan"
+      },
+      "month": "Month",
+      "technology": "Technology",
+      "extraPrice": "Extra Price"
+    }
+  }
+}

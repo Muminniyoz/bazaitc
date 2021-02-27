@@ -1,0 +1,75 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="course">
+            <h2><span jhiTranslate="bazaitcApp.course.detail.title">Course</span> {{ course.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="bazaitcApp.course.title">Title</span></dt>
+                <dd>
+                    <span>{{ course.title }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.price">Price</span></dt>
+                <dd>
+                    <span>{{ course.price }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.startDate">Start Date</span></dt>
+                <dd>
+                    <span>{{ course.startDate }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{ 'bazaitcApp.CourseStatus.' + course.status }}">{{ course.status }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.duration">Duration</span></dt>
+                <dd>
+                    <span>{{ course.duration }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.planFile">Plan File</span></dt>
+                <dd>
+                    <div *ngIf="course.planFile">
+                        <a (click)="openFile(course.planFileContentType, course.planFile)" jhiTranslate="entity.action.open">open</a>
+                        {{ course.planFileContentType }}, {{ byteSize(course.planFile) }}
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.info">Info</span></dt>
+                <dd>
+                    <span>{{ course.info }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.teacher">Teacher</span></dt>
+                <dd>
+                    <div *ngIf="course.teacherId">
+                        <a [routerLink]="['/teacher', course.teacherId, 'view']">{{ course.teacherId }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.center">Center</span></dt>
+                <dd>
+                    <div *ngIf="course.centerId">
+                        <a [routerLink]="['/center', course.centerId, 'view']">{{ course.centerId }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.course.skill">Skill</span></dt>
+                <dd>
+                    <div *ngIf="course.skillId">
+                        <a [routerLink]="['/skill', course.skillId, 'view']">{{ course.skillId }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/course', course.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

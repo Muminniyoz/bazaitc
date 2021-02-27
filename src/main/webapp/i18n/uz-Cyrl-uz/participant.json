@@ -1,0 +1,28 @@
+{
+  "bazaitcApp": {
+    "participant": {
+      "home": {
+        "title": "Participants",
+        "createLabel": "Янги Participant қўшиш",
+        "createOrEditLabel": "Participantни таҳрирлаш",
+        "notFound": "No Participants found"
+      },
+      "created": "Participant {{ param }} билан қўшилди.",
+      "updated": "{{ param }}- Participant сақланди.",
+      "deleted": "{{ param }}- Participant ўчирилди.",
+      "delete": {
+        "question": "{{ id }}- Participantни ўчирмоқчимисиз? "
+      },
+      "detail": {
+        "title": "Participant"
+      },
+      "startingDate": "Starting Date",
+      "active": "Active",
+      "status": "Status",
+      "contractNumber": "Contract Number",
+      "info": "Info",
+      "student": "Student",
+      "course": "Course"
+    }
+  }
+}
