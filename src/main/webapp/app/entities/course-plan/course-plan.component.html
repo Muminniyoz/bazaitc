@@ -1,0 +1,65 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="bazaitcApp.coursePlan.home.title">Course Plans</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-course-plan" [routerLink]="['/course-plan/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span  jhiTranslate="bazaitcApp.coursePlan.home.createLabel">
+            Create a new Course Plan
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="coursePlans?.length === 0">
+        <span jhiTranslate="bazaitcApp.coursePlan.home.notFound">No coursePlans found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="coursePlans && coursePlans.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="month"><span jhiTranslate="bazaitcApp.coursePlan.month">Month</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="technology"><span jhiTranslate="bazaitcApp.coursePlan.technology">Technology</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="extraPrice"><span jhiTranslate="bazaitcApp.coursePlan.extraPrice">Extra Price</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+                <tr *ngFor="let coursePlan of coursePlans ;trackBy: trackId">
+                    <td><a [routerLink]="['/course-plan', coursePlan.id, 'view']">{{ coursePlan.id }}</a></td>
+                    <td jhiTranslate="{{ 'bazaitcApp.Month.' + coursePlan.month }}">{{ coursePlan.month }}</td>
+                    <td>{{ coursePlan.technology }}</td>
+                    <td>{{ coursePlan.extraPrice }}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/course-plan', coursePlan.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/course-plan', coursePlan.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(coursePlan)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

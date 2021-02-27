@@ -1,0 +1,24 @@
+{
+  "bazaitcApp": {
+    "coursePlan": {
+      "home": {
+        "title": "Course Plans",
+        "createLabel": "Создать новый Course Plan",
+        "createOrEditLabel": "Создать или отредактировать Course Plan",
+        "notFound": "No Course Plans found"
+      },
+      "created": "Новый Course Plan создан с идентификатором {{ param }}",
+      "updated": "Course Plan обновлен с идентификатором {{ param }}",
+      "deleted": "Course Plan удален с идентификатором {{ param }}",
+      "delete": {
+        "question": "Вы уверены что хотите удалить Course Plan {{ id }}?"
+      },
+      "detail": {
+        "title": "Course Plan"
+      },
+      "month": "Month",
+      "technology": "Technology",
+      "extraPrice": "Extra Price"
+    }
+  }
+}

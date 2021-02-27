@@ -1,0 +1,11 @@
+{
+  "bazaitcApp": {
+    "CourseStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "PLANNING": "PLANNING",
+      "FINISHED": "FINISHED",
+      "CANCELED": "CANCELED"
+    }
+  }
+}

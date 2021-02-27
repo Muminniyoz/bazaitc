@@ -1,0 +1,86 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="payment">
+            <h2><span jhiTranslate="bazaitcApp.payment.detail.title">Payment</span> {{ payment.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="bazaitcApp.payment.paymentDate">Payment Date</span></dt>
+                <dd>
+                    <span>{{ payment.paymentDate }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.paymentProvider">Payment Provider</span></dt>
+                <dd>
+                    <span>{{ payment.paymentProvider }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.amount">Amount</span></dt>
+                <dd>
+                    <span>{{ payment.amount }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.paymentStatus">Payment Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{ 'bazaitcApp.PaymentStatus.' + payment.paymentStatus }}">{{ payment.paymentStatus }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.curency">Curency</span></dt>
+                <dd>
+                    <span>{{ payment.curency }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.customerName">Customer Name</span></dt>
+                <dd>
+                    <span>{{ payment.customerName }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.isEnough">Is Enough</span></dt>
+                <dd>
+                    <span>{{ payment.isEnough }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.isConfirmed">Is Confirmed</span></dt>
+                <dd>
+                    <span>{{ payment.isConfirmed }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.month">Month</span></dt>
+                <dd>
+                    <span jhiTranslate="{{ 'bazaitcApp.Month.' + payment.month }}">{{ payment.month }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.info">Info</span></dt>
+                <dd>
+                    <span>{{ payment.info }}</span>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.modifiedBy">Modified By</span></dt>
+                <dd>
+                    {{ payment.modifiedById }}
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.confirmedBy">Confirmed By</span></dt>
+                <dd>
+                    {{ payment.confirmedById }}
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.student">Student</span></dt>
+                <dd>
+                    <div *ngIf="payment.studentId">
+                        <a [routerLink]="['/participant', payment.studentId, 'view']">{{ payment.studentId }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="bazaitcApp.payment.method">Method</span></dt>
+                <dd>
+                    <div *ngIf="payment.methodId">
+                        <a [routerLink]="['/payment-method', payment.methodId, 'view']">{{ payment.methodId }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/payment', payment.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

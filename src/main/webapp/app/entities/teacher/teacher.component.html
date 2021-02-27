@@ -1,0 +1,109 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="bazaitcApp.teacher.home.title">Teachers</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-teacher" [routerLink]="['/teacher/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span  jhiTranslate="bazaitcApp.teacher.home.createLabel">
+            Create a new Teacher
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="teachers?.length === 0">
+        <span jhiTranslate="bazaitcApp.teacher.home.notFound">No teachers found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="teachers && teachers.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="firstName"><span jhiTranslate="bazaitcApp.teacher.firstName">First Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="lastName"><span jhiTranslate="bazaitcApp.teacher.lastName">Last Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="middleName"><span jhiTranslate="bazaitcApp.teacher.middleName">Middle Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="email"><span jhiTranslate="bazaitcApp.teacher.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="dateOfBirth"><span jhiTranslate="bazaitcApp.teacher.dateOfBirth">Date Of Birth</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="gender"><span jhiTranslate="bazaitcApp.teacher.gender">Gender</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="registerationDate"><span jhiTranslate="bazaitcApp.teacher.registerationDate">Registeration Date</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="telephone"><span jhiTranslate="bazaitcApp.teacher.telephone">Telephone</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="mobile"><span jhiTranslate="bazaitcApp.teacher.mobile">Mobile</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="fullPhotoUrl"><span jhiTranslate="bazaitcApp.teacher.fullPhotoUrl">Full Photo Url</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="active"><span jhiTranslate="bazaitcApp.teacher.active">Active</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="key"><span jhiTranslate="bazaitcApp.teacher.key">Key</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="about"><span jhiTranslate="bazaitcApp.teacher.about">About</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="portfolia"><span jhiTranslate="bazaitcApp.teacher.portfolia">Portfolia</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="info"><span jhiTranslate="bazaitcApp.teacher.info">Info</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="leaveDate"><span jhiTranslate="bazaitcApp.teacher.leaveDate">Leave Date</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="isShowingHome"><span jhiTranslate="bazaitcApp.teacher.isShowingHome">Is Showing Home</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="image"><span jhiTranslate="bazaitcApp.teacher.image">Image</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="modifiedById"><span jhiTranslate="bazaitcApp.teacher.modifiedBy">Modified By</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="userId"><span jhiTranslate="bazaitcApp.teacher.user">User</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+                <tr *ngFor="let teacher of teachers ;trackBy: trackId">
+                    <td><a [routerLink]="['/teacher', teacher.id, 'view']">{{ teacher.id }}</a></td>
+                    <td>{{ teacher.firstName }}</td>
+                    <td>{{ teacher.lastName }}</td>
+                    <td>{{ teacher.middleName }}</td>
+                    <td>{{ teacher.email }}</td>
+                    <td>{{ teacher.dateOfBirth | date:'mediumDate' }}</td>
+                    <td jhiTranslate="{{ 'bazaitcApp.Gender.' + teacher.gender }}">{{ teacher.gender }}</td>
+                    <td>{{ teacher.registerationDate | date:'mediumDate' }}</td>
+                    <td>{{ teacher.telephone }}</td>
+                    <td>{{ teacher.mobile }}</td>
+                    <td>{{ teacher.fullPhotoUrl }}</td>
+                    <td>{{ teacher.active }}</td>
+                    <td>{{ teacher.key }}</td>
+                    <td>{{ teacher.about }}</td>
+                    <td>{{ teacher.portfolia }}</td>
+                    <td>
+                        <a *ngIf="teacher.info" (click)="openFile(teacher.infoContentType, teacher.info)" jhiTranslate="entity.action.open">open</a>
+                        <span *ngIf="teacher.info">{{ teacher.infoContentType }}, {{ byteSize(teacher.info) }}</span>
+                    </td>
+                    <td>{{ teacher.leaveDate | date:'mediumDate' }}</td>
+                    <td>{{ teacher.isShowingHome }}</td>
+                    <td>
+                        <a *ngIf="teacher.image" (click)="openFile(teacher.imageContentType, teacher.image)" jhiTranslate="entity.action.open">open</a>
+                        <span *ngIf="teacher.image">{{ teacher.imageContentType }}, {{ byteSize(teacher.image) }}</span>
+                    </td>
+                    <td>
+                        {{ teacher.modifiedById }}
+                    </td>
+                    <td>
+                        {{ teacher.userId }}
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/teacher', teacher.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/teacher', teacher.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(teacher)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
