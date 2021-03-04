@@ -156,6 +156,7 @@ public class UserService {
     public User createUser(UserDTO userDTO) {
         User user = new User();
         user.setLogin(userDTO.getLogin().toLowerCase());
+
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
@@ -167,12 +168,14 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String encryptedPassword = passwordEncoder.encode(userDTO.getLogin());
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+
         if (userDTO.getAuthorities() != null) {
+            userDTO.getAuthorities().add("ROLE_USER");
             Set<Authority> authorities = userDTO
                 .getAuthorities()
                 .stream()
@@ -180,6 +183,10 @@ public class UserService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        } else {
+            Set<Authority> authorities = new HashSet<>();
+            authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
             user.setAuthorities(authorities);
         }
         userRepository.save(user);
@@ -213,6 +220,7 @@ public class UserService {
                     user.setLangKey(userDTO.getLangKey());
                     Set<Authority> managedAuthorities = user.getAuthorities();
                     managedAuthorities.clear();
+                    userDTO.getAuthorities().add("ROLE_USER");
                     userDTO
                         .getAuthorities()
                         .stream()
@@ -220,6 +228,7 @@ public class UserService {
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .forEach(managedAuthorities::add);
+
                     this.clearUserCaches(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;

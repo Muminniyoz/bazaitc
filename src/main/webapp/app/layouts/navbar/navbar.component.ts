@@ -10,6 +10,12 @@ import { LoginModalService } from 'app/core/login/login-modal.service';
 import { LoginService } from 'app/core/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 
+interface Menu {
+  title: string;
+  name: string;
+  url: string;
+  icon: string;
+}
 @Component({
   selector: 'jhi-navbar',
   templateUrl: './navbar.component.html',
@@ -21,6 +27,69 @@ export class NavbarComponent implements OnInit {
   languages = LANGUAGES;
   swaggerEnabled?: boolean;
   version: string;
+
+  menuList: Menu[] = [
+    {
+      name: 'regions',
+      url: 'regions',
+      icon: 'asterisk',
+    },
+    {
+      name: 'center',
+      url: 'center',
+      icon: 'asterisk',
+    },
+    {
+      name: 'skill',
+      url: 'skill',
+      icon: 'asterisk',
+    },
+    {
+      name: 'teacher',
+      url: 'teacher',
+      icon: 'asterisk',
+    },
+    {
+      name: 'course',
+      url: 'course',
+      icon: 'asterisk',
+    },
+    {
+      name: 'registered',
+      url: 'registered',
+      icon: 'asterisk',
+    },
+    {
+      name: 'student',
+      url: 'student',
+      icon: 'asterisk',
+    },
+    {
+      name: 'participant',
+      url: 'participant',
+      icon: 'asterisk',
+    },
+    {
+      name: 'paymentMethod',
+      url: 'payment-method',
+      icon: 'asterisk',
+    },
+    {
+      name: 'payment',
+      url: 'payment',
+      icon: 'asterisk',
+    },
+    {
+      name: 'eventHistory',
+      url: 'event-history',
+      icon: 'asterisk',
+    },
+    {
+      name: 'coursePlan',
+      url: 'course-plan',
+      icon: 'asterisk',
+    },
+  ];
 
   constructor(
     private loginService: LoginService,

@@ -2,10 +2,10 @@
   "bazaitcApp": {
     "CourseStatus": {
       "null": "",
-      "ACTIVE": "ACTIVE",
-      "PLANNING": "PLANNING",
-      "FINISHED": "FINISHED",
-      "CANCELED": "CANCELED"
+      "ACTIVE": "Aktiv",
+      "PLANNING": "Rejalashtirilmoqda",
+      "FINISHED": "Tugatilgan",
+      "CANCELED": "Bekor qilingan"
     }
   }
 }

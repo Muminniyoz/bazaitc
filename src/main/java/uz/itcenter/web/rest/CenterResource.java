@@ -1,30 +1,31 @@
 package uz.itcenter.web.rest;
 
-import uz.itcenter.service.CenterService;
-import uz.itcenter.web.rest.errors.BadRequestAlertException;
-import uz.itcenter.service.dto.CenterDTO;
-import uz.itcenter.service.dto.CenterCriteria;
-import uz.itcenter.service.CenterQueryService;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uz.itcenter.domain.User;
+import uz.itcenter.security.SecurityUtils;
+import uz.itcenter.service.CenterQueryService;
+import uz.itcenter.service.CenterService;
+import uz.itcenter.service.UserService;
+import uz.itcenter.service.dto.CenterCriteria;
+import uz.itcenter.service.dto.CenterDTO;
+import uz.itcenter.web.rest.errors.BadRequestAlertException;
 
 /**
  * REST controller for managing {@link uz.itcenter.domain.Center}.
@@ -32,7 +33,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class CenterResource {
-
     private final Logger log = LoggerFactory.getLogger(CenterResource.class);
 
     private static final String ENTITY_NAME = "center";
@@ -41,11 +41,13 @@ public class CenterResource {
     private String applicationName;
 
     private final CenterService centerService;
+    private final UserService userService;
 
     private final CenterQueryService centerQueryService;
 
-    public CenterResource(CenterService centerService, CenterQueryService centerQueryService) {
+    public CenterResource(CenterService centerService, UserService userService, CenterQueryService centerQueryService) {
         this.centerService = centerService;
+        this.userService = userService;
         this.centerQueryService = centerQueryService;
     }
 
@@ -63,7 +65,8 @@ public class CenterResource {
             throw new BadRequestAlertException("A new center cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CenterDTO result = centerService.save(centerDTO);
-        return ResponseEntity.created(new URI("/api/centers/" + result.getId()))
+        return ResponseEntity
+            .created(new URI("/api/centers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -84,7 +87,8 @@ public class CenterResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CenterDTO result = centerService.save(centerDTO);
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, centerDTO.getId().toString()))
             .body(result);
     }
@@ -102,6 +106,14 @@ public class CenterResource {
         Page<CenterDTO> page = centerQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/centers/allowed")
+    public ResponseEntity<CenterDTO> getAllowedCenters() {
+        log.debug("REST request to get Centers by criteria: ");
+        User u = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().get()).get();
+        CenterDTO center = centerService.findAllowedCenter().orElse(null);
+        return ResponseEntity.ok().body(center);
     }
 
     /**
@@ -139,6 +151,9 @@ public class CenterResource {
     public ResponseEntity<Void> deleteCenter(@PathVariable Long id) {
         log.debug("REST request to delete Center : {}", id);
         centerService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .build();
     }
 }

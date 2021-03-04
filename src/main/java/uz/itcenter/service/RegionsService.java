@@ -1,17 +1,15 @@
 package uz.itcenter.service;
 
-import uz.itcenter.service.dto.RegionsDTO;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import uz.itcenter.service.dto.RegionsDTO;
 
 /**
  * Service Interface for managing {@link uz.itcenter.domain.Regions}.
  */
 public interface RegionsService {
-
     /**
      * Save a regions.
      *
@@ -28,7 +26,6 @@ public interface RegionsService {
      */
     Page<RegionsDTO> findAll(Pageable pageable);
 
-
     /**
      * Get the "id" regions.
      *
@@ -43,4 +40,6 @@ public interface RegionsService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    public Optional<RegionsDTO> findAllowedRegions();
 }

@@ -76,4 +76,7 @@ public final class SecurityUtils {
     private static Stream<String> getAuthorities(Authentication authentication) {
         return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
     }
+    //    public static int userCenter(){
+    //
+    //    }
 }

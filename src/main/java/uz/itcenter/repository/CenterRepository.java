@@ -1,11 +1,10 @@
 package uz.itcenter.repository;
 
-import uz.itcenter.domain.Center;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import uz.itcenter.domain.Center;
 
 /**
  * Spring Data  repository for the Center entity.
@@ -13,10 +12,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Repository
 public interface CenterRepository extends JpaRepository<Center, Long>, JpaSpecificationExecutor<Center> {
-
     @Query("select center from Center center where center.modifiedBy.login = ?#{principal.username}")
-    List<Center> findByModifiedByIsCurrentUser();
+    Optional<List<Center>> findByModifiedByIsCurrentUser();
 
     @Query("select center from Center center where center.manager.login = ?#{principal.username}")
-    List<Center> findByManagerIsCurrentUser();
+    Optional<Center> findByManagerIsCurrentUser();
 }

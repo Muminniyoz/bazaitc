@@ -1,17 +1,15 @@
 package uz.itcenter.service;
 
-import uz.itcenter.service.dto.CenterDTO;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import uz.itcenter.service.dto.CenterDTO;
 
 /**
  * Service Interface for managing {@link uz.itcenter.domain.Center}.
  */
 public interface CenterService {
-
     /**
      * Save a center.
      *
@@ -28,7 +26,6 @@ public interface CenterService {
      */
     Page<CenterDTO> findAll(Pageable pageable);
 
-
     /**
      * Get the "id" center.
      *
@@ -43,4 +40,6 @@ public interface CenterService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Optional<CenterDTO> findAllowedCenter();
 }
