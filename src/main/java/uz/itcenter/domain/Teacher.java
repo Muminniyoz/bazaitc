@@ -1,18 +1,15 @@
 package uz.itcenter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import uz.itcenter.domain.enumeration.Gender;
 
 /**
@@ -22,7 +19,6 @@ import uz.itcenter.domain.enumeration.Gender;
 @Table(name = "teacher")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Teacher implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -103,15 +99,17 @@ public class Teacher implements Serializable {
     @JsonIgnoreProperties(value = "teachers", allowSetters = true)
     private User modifiedBy;
 
-    @ManyToOne
+    @OneToOne
     @JsonIgnoreProperties(value = "teachers", allowSetters = true)
     private User user;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JoinTable(name = "teacher_skills",
-               joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "skills_id", referencedColumnName = "id"))
+    @JoinTable(
+        name = "teacher_skills",
+        joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "skills_id", referencedColumnName = "id")
+    )
     private Set<Skill> skills = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -433,6 +431,7 @@ public class Teacher implements Serializable {
     public void setSkills(Set<Skill> skills) {
         this.skills = skills;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

@@ -1,17 +1,16 @@
 package uz.itcenter.service;
 
-import uz.itcenter.service.dto.CourseDTO;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import uz.itcenter.domain.Teacher;
+import uz.itcenter.service.dto.CourseDTO;
 
 /**
  * Service Interface for managing {@link uz.itcenter.domain.Course}.
  */
 public interface CourseService {
-
     /**
      * Save a course.
      *
@@ -27,7 +26,6 @@ public interface CourseService {
      * @return the list of entities.
      */
     Page<CourseDTO> findAll(Pageable pageable);
-
 
     /**
      * Get the "id" course.

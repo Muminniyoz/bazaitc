@@ -1,14 +1,13 @@
 package uz.itcenter.web.rest;
 
-import uz.itcenter.service.PaymentMethodService;
-import uz.itcenter.web.rest.errors.BadRequestAlertException;
-import uz.itcenter.service.dto.PaymentMethodDTO;
-import uz.itcenter.service.dto.PaymentMethodCriteria;
-import uz.itcenter.service.PaymentMethodQueryService;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,15 +15,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uz.itcenter.security.AuthoritiesConstants;
+import uz.itcenter.service.PaymentMethodQueryService;
+import uz.itcenter.service.PaymentMethodService;
+import uz.itcenter.service.dto.PaymentMethodCriteria;
+import uz.itcenter.service.dto.PaymentMethodDTO;
+import uz.itcenter.web.rest.errors.BadRequestAlertException;
 
 /**
  * REST controller for managing {@link uz.itcenter.domain.PaymentMethod}.
@@ -32,7 +32,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class PaymentMethodResource {
-
     private final Logger log = LoggerFactory.getLogger(PaymentMethodResource.class);
 
     private static final String ENTITY_NAME = "paymentMethod";
@@ -57,13 +56,16 @@ public class PaymentMethodResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/payment-methods")
-    public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@Valid @RequestBody PaymentMethodDTO paymentMethodDTO) throws URISyntaxException {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@Valid @RequestBody PaymentMethodDTO paymentMethodDTO)
+        throws URISyntaxException {
         log.debug("REST request to save PaymentMethod : {}", paymentMethodDTO);
         if (paymentMethodDTO.getId() != null) {
             throw new BadRequestAlertException("A new paymentMethod cannot already have an ID", ENTITY_NAME, "idexists");
         }
         PaymentMethodDTO result = paymentMethodService.save(paymentMethodDTO);
-        return ResponseEntity.created(new URI("/api/payment-methods/" + result.getId()))
+        return ResponseEntity
+            .created(new URI("/api/payment-methods/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -78,13 +80,16 @@ public class PaymentMethodResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/payment-methods")
-    public ResponseEntity<PaymentMethodDTO> updatePaymentMethod(@Valid @RequestBody PaymentMethodDTO paymentMethodDTO) throws URISyntaxException {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<PaymentMethodDTO> updatePaymentMethod(@Valid @RequestBody PaymentMethodDTO paymentMethodDTO)
+        throws URISyntaxException {
         log.debug("REST request to update PaymentMethod : {}", paymentMethodDTO);
         if (paymentMethodDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         PaymentMethodDTO result = paymentMethodService.save(paymentMethodDTO);
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, paymentMethodDTO.getId().toString()))
             .body(result);
     }
@@ -136,9 +141,13 @@ public class PaymentMethodResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/payment-methods/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deletePaymentMethod(@PathVariable Long id) {
         log.debug("REST request to delete PaymentMethod : {}", id);
         paymentMethodService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .build();
     }
 }

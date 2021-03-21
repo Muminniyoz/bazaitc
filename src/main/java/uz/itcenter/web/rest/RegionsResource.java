@@ -15,9 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uz.itcenter.domain.User;
+import uz.itcenter.security.AuthoritiesConstants;
 import uz.itcenter.security.SecurityUtils;
 import uz.itcenter.service.RegionsQueryService;
 import uz.itcenter.service.RegionsService;
@@ -59,6 +61,7 @@ public class RegionsResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/regions")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<RegionsDTO> createRegions(@Valid @RequestBody RegionsDTO regionsDTO) throws URISyntaxException {
         log.debug("REST request to save Regions : {}", regionsDTO);
         if (regionsDTO.getId() != null) {
@@ -81,6 +84,7 @@ public class RegionsResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/regions")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<RegionsDTO> updateRegions(@Valid @RequestBody RegionsDTO regionsDTO) throws URISyntaxException {
         log.debug("REST request to update Regions : {}", regionsDTO);
         if (regionsDTO.getId() == null) {
@@ -148,6 +152,7 @@ public class RegionsResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/regions/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteRegions(@PathVariable Long id) {
         log.debug("REST request to delete Regions : {}", id);
         regionsService.delete(id);

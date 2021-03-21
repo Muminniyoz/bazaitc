@@ -1,19 +1,20 @@
 package uz.itcenter.service.impl;
 
-import uz.itcenter.service.CourseService;
-import uz.itcenter.domain.Course;
-import uz.itcenter.repository.CourseRepository;
-import uz.itcenter.service.dto.CourseDTO;
-import uz.itcenter.service.mapper.CourseMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import uz.itcenter.domain.Course;
+import uz.itcenter.domain.Teacher;
+import uz.itcenter.repository.CourseRepository;
+import uz.itcenter.service.CourseService;
+import uz.itcenter.service.dto.CourseDTO;
+import uz.itcenter.service.mapper.CourseMapper;
 
 /**
  * Service Implementation for managing {@link Course}.
@@ -21,7 +22,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class CourseServiceImpl implements CourseService {
-
     private final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
 
     private final CourseRepository courseRepository;
@@ -45,17 +45,14 @@ public class CourseServiceImpl implements CourseService {
     @Transactional(readOnly = true)
     public Page<CourseDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Courses");
-        return courseRepository.findAll(pageable)
-            .map(courseMapper::toDto);
+        return courseRepository.findAll(pageable).map(courseMapper::toDto);
     }
-
 
     @Override
     @Transactional(readOnly = true)
     public Optional<CourseDTO> findOne(Long id) {
         log.debug("Request to get Course : {}", id);
-        return courseRepository.findById(id)
-            .map(courseMapper::toDto);
+        return courseRepository.findById(id).map(courseMapper::toDto);
     }
 
     @Override

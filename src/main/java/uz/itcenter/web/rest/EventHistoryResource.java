@@ -1,14 +1,12 @@
 package uz.itcenter.web.rest;
 
-import uz.itcenter.service.EventHistoryService;
-import uz.itcenter.web.rest.errors.BadRequestAlertException;
-import uz.itcenter.service.dto.EventHistoryDTO;
-import uz.itcenter.service.dto.EventHistoryCriteria;
-import uz.itcenter.service.EventHistoryQueryService;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,14 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uz.itcenter.service.EventHistoryQueryService;
+import uz.itcenter.service.EventHistoryService;
+import uz.itcenter.service.dto.EventHistoryCriteria;
+import uz.itcenter.service.dto.EventHistoryDTO;
+import uz.itcenter.web.rest.errors.BadRequestAlertException;
 
 /**
  * REST controller for managing {@link uz.itcenter.domain.EventHistory}.
@@ -31,7 +29,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class EventHistoryResource {
-
     private final Logger log = LoggerFactory.getLogger(EventHistoryResource.class);
 
     private static final String ENTITY_NAME = "eventHistory";
@@ -48,45 +45,45 @@ public class EventHistoryResource {
         this.eventHistoryQueryService = eventHistoryQueryService;
     }
 
-    /**
-     * {@code POST  /event-histories} : Create a new eventHistory.
-     *
-     * @param eventHistoryDTO the eventHistoryDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new eventHistoryDTO, or with status {@code 400 (Bad Request)} if the eventHistory has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PostMapping("/event-histories")
-    public ResponseEntity<EventHistoryDTO> createEventHistory(@RequestBody EventHistoryDTO eventHistoryDTO) throws URISyntaxException {
-        log.debug("REST request to save EventHistory : {}", eventHistoryDTO);
-        if (eventHistoryDTO.getId() != null) {
-            throw new BadRequestAlertException("A new eventHistory cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        EventHistoryDTO result = eventHistoryService.save(eventHistoryDTO);
-        return ResponseEntity.created(new URI("/api/event-histories/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
+    //    /**
+    //     * {@code POST  /event-histories} : Create a new eventHistory.
+    //     *
+    //     * @param eventHistoryDTO the eventHistoryDTO to create.
+    //     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new eventHistoryDTO, or with status {@code 400 (Bad Request)} if the eventHistory has already an ID.
+    //     * @throws URISyntaxException if the Location URI syntax is incorrect.
+    //     */
+    //    @PostMapping("/event-histories")
+    //    public ResponseEntity<EventHistoryDTO> createEventHistory(@RequestBody EventHistoryDTO eventHistoryDTO) throws URISyntaxException {
+    //        log.debug("REST request to save EventHistory : {}", eventHistoryDTO);
+    //        if (eventHistoryDTO.getId() != null) {
+    //            throw new BadRequestAlertException("A new eventHistory cannot already have an ID", ENTITY_NAME, "idexists");
+    //        }
+    //        EventHistoryDTO result = eventHistoryService.save(eventHistoryDTO);
+    //        return ResponseEntity.created(new URI("/api/event-histories/" + result.getId()))
+    //            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+    //            .body(result);
+    //    }
 
-    /**
-     * {@code PUT  /event-histories} : Updates an existing eventHistory.
-     *
-     * @param eventHistoryDTO the eventHistoryDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated eventHistoryDTO,
-     * or with status {@code 400 (Bad Request)} if the eventHistoryDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the eventHistoryDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PutMapping("/event-histories")
-    public ResponseEntity<EventHistoryDTO> updateEventHistory(@RequestBody EventHistoryDTO eventHistoryDTO) throws URISyntaxException {
-        log.debug("REST request to update EventHistory : {}", eventHistoryDTO);
-        if (eventHistoryDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        EventHistoryDTO result = eventHistoryService.save(eventHistoryDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, eventHistoryDTO.getId().toString()))
-            .body(result);
-    }
+    //    /**
+    //     * {@code PUT  /event-histories} : Updates an existing eventHistory.
+    //     *
+    //     * @param eventHistoryDTO the eventHistoryDTO to update.
+    //     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated eventHistoryDTO,
+    //     * or with status {@code 400 (Bad Request)} if the eventHistoryDTO is not valid,
+    //     * or with status {@code 500 (Internal Server Error)} if the eventHistoryDTO couldn't be updated.
+    //     * @throws URISyntaxException if the Location URI syntax is incorrect.
+    //     */
+    //    @PutMapping("/event-histories")
+    //    public ResponseEntity<EventHistoryDTO> updateEventHistory(@RequestBody EventHistoryDTO eventHistoryDTO) throws URISyntaxException {
+    //        log.debug("REST request to update EventHistory : {}", eventHistoryDTO);
+    //        if (eventHistoryDTO.getId() == null) {
+    //            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    //        }
+    //        EventHistoryDTO result = eventHistoryService.save(eventHistoryDTO);
+    //        return ResponseEntity.ok()
+    //            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, eventHistoryDTO.getId().toString()))
+    //            .body(result);
+    //    }
 
     /**
      * {@code GET  /event-histories} : get all the eventHistories.
@@ -127,17 +124,16 @@ public class EventHistoryResource {
         Optional<EventHistoryDTO> eventHistoryDTO = eventHistoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(eventHistoryDTO);
     }
-
-    /**
-     * {@code DELETE  /event-histories/:id} : delete the "id" eventHistory.
-     *
-     * @param id the id of the eventHistoryDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/event-histories/{id}")
-    public ResponseEntity<Void> deleteEventHistory(@PathVariable Long id) {
-        log.debug("REST request to delete EventHistory : {}", id);
-        eventHistoryService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
-    }
+    //    /**
+    //     * {@code DELETE  /event-histories/:id} : delete the "id" eventHistory.
+    //     *
+    //     * @param id the id of the eventHistoryDTO to delete.
+    //     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+    //     */
+    //    @DeleteMapping("/event-histories/{id}")
+    //    public ResponseEntity<Void> deleteEventHistory(@PathVariable Long id) {
+    //        log.debug("REST request to delete EventHistory : {}", id);
+    //        eventHistoryService.delete(id);
+    //        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    //    }
 }

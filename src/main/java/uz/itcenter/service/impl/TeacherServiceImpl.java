@@ -1,19 +1,19 @@
 package uz.itcenter.service.impl;
 
-import uz.itcenter.service.TeacherService;
-import uz.itcenter.domain.Teacher;
-import uz.itcenter.repository.TeacherRepository;
-import uz.itcenter.service.dto.TeacherDTO;
-import uz.itcenter.service.mapper.TeacherMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import uz.itcenter.domain.Teacher;
+import uz.itcenter.repository.TeacherRepository;
+import uz.itcenter.service.TeacherService;
+import uz.itcenter.service.dto.TeacherDTO;
+import uz.itcenter.service.mapper.TeacherMapper;
 
 /**
  * Service Implementation for managing {@link Teacher}.
@@ -21,7 +21,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class TeacherServiceImpl implements TeacherService {
-
     private final Logger log = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
     private final TeacherRepository teacherRepository;
@@ -45,10 +44,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(readOnly = true)
     public Page<TeacherDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Teachers");
-        return teacherRepository.findAll(pageable)
-            .map(teacherMapper::toDto);
+        return teacherRepository.findAll(pageable).map(teacherMapper::toDto);
     }
-
 
     public Page<TeacherDTO> findAllWithEagerRelationships(Pageable pageable) {
         return teacherRepository.findAllWithEagerRelationships(pageable).map(teacherMapper::toDto);
@@ -58,13 +55,17 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(readOnly = true)
     public Optional<TeacherDTO> findOne(Long id) {
         log.debug("Request to get Teacher : {}", id);
-        return teacherRepository.findOneWithEagerRelationships(id)
-            .map(teacherMapper::toDto);
+        return teacherRepository.findOneWithEagerRelationships(id).map(teacherMapper::toDto);
     }
 
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Teacher : {}", id);
         teacherRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<TeacherDTO> findByUserIsCurrentUser() {
+        return teacherRepository.findByUserIsCurrentUser().map(teacherMapper::toDto);
     }
 }

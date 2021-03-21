@@ -1,17 +1,15 @@
 package uz.itcenter.service;
 
-import uz.itcenter.service.dto.TeacherDTO;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import uz.itcenter.service.dto.TeacherDTO;
 
 /**
  * Service Interface for managing {@link uz.itcenter.domain.Teacher}.
  */
 public interface TeacherService {
-
     /**
      * Save a teacher.
      *
@@ -35,7 +33,6 @@ public interface TeacherService {
      */
     Page<TeacherDTO> findAllWithEagerRelationships(Pageable pageable);
 
-
     /**
      * Get the "id" teacher.
      *
@@ -50,4 +47,6 @@ public interface TeacherService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Optional<TeacherDTO> findByUserIsCurrentUser();
 }

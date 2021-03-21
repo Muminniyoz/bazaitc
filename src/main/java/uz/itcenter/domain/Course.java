@@ -1,16 +1,13 @@
 package uz.itcenter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
+import javax.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import uz.itcenter.domain.enumeration.CourseStatus;
 
 /**
@@ -20,7 +17,6 @@ import uz.itcenter.domain.enumeration.CourseStatus;
 @Table(name = "course")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Course implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -28,7 +24,7 @@ public class Course implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "price")
@@ -246,6 +242,7 @@ public class Course implements Serializable {
     public void setSkill(Skill skill) {
         this.skill = skill;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

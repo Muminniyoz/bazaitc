@@ -14,6 +14,11 @@ import { FooterComponent } from './layouts/footer/footer.component';
 import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
+import { ManagerComponent } from './src/main/webapp/app/pages/manager/manager.component';
+import { TeacherComponent } from './pages/teacher/teacher.component';
+import { DirectorComponent } from './pages/director/director.component';
+import { AccontantComponent } from './pages/accontant/accontant.component';
+import { AccountantComponent } from './pages/accountant/accountant.component';
 
 @NgModule({
   imports: [
@@ -25,7 +30,19 @@ import { ErrorComponent } from './layouts/error/error.component';
     BazaitcEntityModule,
     BazaitcAppRoutingModule,
   ],
-  declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
+  declarations: [
+    MainComponent,
+    NavbarComponent,
+    ErrorComponent,
+    PageRibbonComponent,
+    ActiveMenuDirective,
+    FooterComponent,
+    ManagerComponent,
+    TeacherComponent,
+    DirectorComponent,
+    AccontantComponent,
+    AccountantComponent,
+  ],
   bootstrap: [MainComponent],
 })
 export class BazaitcAppModule {}

@@ -1,29 +1,31 @@
 package uz.itcenter.web.rest;
 
-import uz.itcenter.service.CourseService;
-import uz.itcenter.web.rest.errors.BadRequestAlertException;
-import uz.itcenter.service.dto.CourseDTO;
-import uz.itcenter.service.dto.CourseCriteria;
-import uz.itcenter.service.CourseQueryService;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.undertow.util.BadRequestException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uz.itcenter.security.AuthoritiesConstants;
+import uz.itcenter.security.SecurityUtils;
+import uz.itcenter.service.*;
+import uz.itcenter.service.dto.CenterDTO;
+import uz.itcenter.service.dto.CourseCriteria;
+import uz.itcenter.service.dto.CourseDTO;
+import uz.itcenter.service.dto.TeacherDTO;
+import uz.itcenter.web.rest.errors.BadRequestAlertException;
 
 /**
  * REST controller for managing {@link uz.itcenter.domain.Course}.
@@ -31,7 +33,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class CourseResource {
-
     private final Logger log = LoggerFactory.getLogger(CourseResource.class);
 
     private static final String ENTITY_NAME = "course";
@@ -43,9 +44,20 @@ public class CourseResource {
 
     private final CourseQueryService courseQueryService;
 
-    public CourseResource(CourseService courseService, CourseQueryService courseQueryService) {
+    private final CenterService centerService;
+    private final TeacherService teacherService;
+
+    public CourseResource(
+        CourseService courseService,
+        CourseQueryService courseQueryService,
+        CenterService centerService,
+        TeacherService teacherService
+    ) {
         this.courseService = courseService;
         this.courseQueryService = courseQueryService;
+
+        this.centerService = centerService;
+        this.teacherService = teacherService;
     }
 
     /**
@@ -56,13 +68,22 @@ public class CourseResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/courses")
-    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO courseDTO) throws URISyntaxException {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\", \"" + AuthoritiesConstants.MANAGER + "\")")
+    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO courseDTO) throws URISyntaxException, BadRequestException {
         log.debug("REST request to save Course : {}", courseDTO);
         if (courseDTO.getId() != null) {
             throw new BadRequestAlertException("A new course cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+            if (!allowedCenter.isPresent() || (!courseDTO.getCenterId().equals(allowedCenter.get().getId()))) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+        }
+
         CourseDTO result = courseService.save(courseDTO);
-        return ResponseEntity.created(new URI("/api/courses/" + result.getId()))
+        return ResponseEntity
+            .created(new URI("/api/courses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -77,13 +98,30 @@ public class CourseResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/courses")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\", \"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<CourseDTO> updateCourse(@RequestBody CourseDTO courseDTO) throws URISyntaxException {
         log.debug("REST request to update Course : {}", courseDTO);
         if (courseDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CourseDTO> oldCourse = courseService.findOne(courseDTO.getId());
+
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+
+            if (oldCourse.isPresent() && allowedCenter.isPresent() && !(oldCourse.get().getCenterId() == allowedCenter.get().getId())) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+
+            if (!allowedCenter.isPresent() || allowedCenter.isPresent() && !(courseDTO.getCenterId() == allowedCenter.get().getId())) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+        }
+
         CourseDTO result = courseService.save(courseDTO);
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, courseDTO.getId().toString()))
             .body(result);
     }
@@ -98,6 +136,23 @@ public class CourseResource {
     @GetMapping("/courses")
     public ResponseEntity<List<CourseDTO>> getAllCourses(CourseCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Courses by criteria: {}", criteria);
+
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+
+            if (!allowedCenter.isPresent()) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+            criteria.getCenterId().setEquals(allowedCenter.get().getId());
+        } else if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.TEACHER)) {
+            TeacherDTO t = this.teacherService.findByUserIsCurrentUser().orElse(null);
+            if (t != null) {
+                criteria.getTeacherId().setEquals(t.getId());
+            } else {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+        }
+
         Page<CourseDTO> page = courseQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -112,6 +167,23 @@ public class CourseResource {
     @GetMapping("/courses/count")
     public ResponseEntity<Long> countCourses(CourseCriteria criteria) {
         log.debug("REST request to count Courses by criteria: {}", criteria);
+
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+
+            if (!allowedCenter.isPresent()) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+            criteria.getCenterId().setEquals(allowedCenter.get().getId());
+        } else if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.TEACHER)) {
+            Optional<TeacherDTO> t = this.teacherService.findByUserIsCurrentUser();
+            if (t.isPresent()) {
+                criteria.getTeacherId().setEquals(t.get().getId());
+            } else {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+        }
+
         return ResponseEntity.ok().body(courseQueryService.countByCriteria(criteria));
     }
 
@@ -125,6 +197,20 @@ public class CourseResource {
     public ResponseEntity<CourseDTO> getCourse(@PathVariable Long id) {
         log.debug("REST request to get Course : {}", id);
         Optional<CourseDTO> courseDTO = courseService.findOne(id);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+            if (
+                !allowedCenter.isPresent() || courseDTO.isPresent() && (!courseDTO.get().getCenterId().equals(allowedCenter.get().getId()))
+            ) {
+                throw new BadRequestAlertException("Permisson denied", ENTITY_NAME, "idnull");
+            }
+        } else if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.TEACHER)) {
+            Optional<TeacherDTO> t = this.teacherService.findByUserIsCurrentUser();
+            if (
+                !t.isPresent() || courseDTO.isPresent() && !(t.get().getId().equals(courseDTO.get().getTeacherId()))
+            ) throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+        }
+
         return ResponseUtil.wrapOrNotFound(courseDTO);
     }
 
@@ -135,9 +221,25 @@ public class CourseResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/courses/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         log.debug("REST request to delete Course : {}", id);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.MANAGER)) {
+            Optional<CourseDTO> oldCourse = courseService.findOne(id);
+
+            Optional<CenterDTO> allowedCenter = centerService.findAllowedCenter();
+
+            if (
+                !allowedCenter.isPresent() || oldCourse.isPresent() && (!oldCourse.get().getCenterId().equals(allowedCenter.get().getId()))
+            ) {
+                throw new BadRequestAlertException("Invalid center id", ENTITY_NAME, "idnull");
+            }
+        }
+
         courseService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .build();
     }
 }

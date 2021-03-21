@@ -16,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uz.itcenter.domain.User;
+import uz.itcenter.security.AuthoritiesConstants;
 import uz.itcenter.security.SecurityUtils;
 import uz.itcenter.service.CenterQueryService;
 import uz.itcenter.service.CenterService;
@@ -59,6 +61,7 @@ public class CenterResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/centers")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<CenterDTO> createCenter(@Valid @RequestBody CenterDTO centerDTO) throws URISyntaxException {
         log.debug("REST request to save Center : {}", centerDTO);
         if (centerDTO.getId() != null) {
@@ -81,6 +84,7 @@ public class CenterResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/centers")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<CenterDTO> updateCenter(@Valid @RequestBody CenterDTO centerDTO) throws URISyntaxException {
         log.debug("REST request to update Center : {}", centerDTO);
         if (centerDTO.getId() == null) {
@@ -148,6 +152,7 @@ public class CenterResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/centers/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteCenter(@PathVariable Long id) {
         log.debug("REST request to delete Center : {}", id);
         centerService.delete(id);

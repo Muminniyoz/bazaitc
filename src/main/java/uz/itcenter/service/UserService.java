@@ -183,6 +183,9 @@ public class UserService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
+            if (authorities.size() > 2) {
+                throw new ExceptionInInitializerError("Role limit error.");
+            }
             user.setAuthorities(authorities);
         } else {
             Set<Authority> authorities = new HashSet<>();
@@ -221,6 +224,7 @@ public class UserService {
                     Set<Authority> managedAuthorities = user.getAuthorities();
                     managedAuthorities.clear();
                     userDTO.getAuthorities().add("ROLE_USER");
+
                     userDTO
                         .getAuthorities()
                         .stream()
@@ -228,7 +232,9 @@ public class UserService {
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .forEach(managedAuthorities::add);
-
+                    if (managedAuthorities.size() > 2) {
+                        throw new ExceptionInInitializerError("Role limit error.");
+                    }
                     this.clearUserCaches(user);
                     log.debug("Changed Information for User: {}", user);
                     return user;

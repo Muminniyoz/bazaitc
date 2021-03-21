@@ -90,7 +90,7 @@
       "otherEntityField": "id"
     },
     {
-      "relationshipType": "many-to-one",
+      "relationshipType": "one-to-one",
       "otherEntityName": "user",
       "otherEntityRelationshipName": "teacher",
       "relationshipName": "user",

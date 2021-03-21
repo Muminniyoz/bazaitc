@@ -29,9 +29,9 @@
                 <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
 
                     <li *ngFor="let m of menuList">
-                        <a class="dropdown-item" routerLink="m.url" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                            <fa-icon icon="{m.icon}" [fixedWidth]="true"></fa-icon>
-                            <span jhiTranslate="global.menu.entities.{m.name}">###</span>
+                        <a class="dropdown-item" routerLink="{{m.url}}" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <fa-icon icon="{{m.icon}}" [fixedWidth]="true"></fa-icon>
+                            <span jhiTranslate="{{'global.menu.entities.' + m.name}}">###</span>
                         </a>
                     </li>
 

@@ -11,7 +11,6 @@ import { LoginService } from 'app/core/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 
 interface Menu {
-  title: string;
   name: string;
   url: string;
   icon: string;
